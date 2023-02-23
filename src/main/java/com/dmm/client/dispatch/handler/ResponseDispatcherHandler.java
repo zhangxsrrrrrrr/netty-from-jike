@@ -11,7 +11,7 @@ import io.netty.channel.SimpleChannelInboundHandler;
  * @description:
  **/
 public class ResponseDispatcherHandler extends SimpleChannelInboundHandler<ResponseMessage> {
-    private RequestPendingCenter requestPendingCenter;
+    private final RequestPendingCenter requestPendingCenter;
 
     public ResponseDispatcherHandler(RequestPendingCenter requestPendingCenter) {
         this.requestPendingCenter = requestPendingCenter;

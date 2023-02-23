@@ -8,6 +8,7 @@ import com.dmm.client.dispatch.handler.ResponseDispatcherHandler;
 import com.dmm.common.MessageHeader;
 import com.dmm.common.OperationResult;
 import com.dmm.common.RequestMessage;
+import com.google.gson.Gson;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
@@ -49,11 +50,13 @@ public class WsClientV1 {
         OperationResultFuture operationResultFuture = new OperationResultFuture();
         requestPendingCenter.add(id, operationResultFuture);
         RequestMessage requestMessage = new RequestMessage();
-        requestMessage.setMessageHeader(new MessageHeader(id));
+        MessageHeader messageHeader = new MessageHeader(id);
+        messageHeader.setOpCode(1);
+        requestMessage.setMessageHeader(messageHeader);
         requestMessage.setMessageBody(new AuthOperation("zhangsan"));
         channelFuture.channel().writeAndFlush(requestMessage);
         OperationResult operationResult = operationResultFuture.get();
-        System.out.println(operationResult);
+        System.out.println(new Gson().toJson(operationResult));
         channelFuture.channel().closeFuture().get();
 
     }
