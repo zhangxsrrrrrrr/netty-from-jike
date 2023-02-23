@@ -1,6 +1,7 @@
 package com.dmm.common;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * @author zhangxun_a
@@ -8,9 +9,13 @@ import lombok.Data;
  * @description: TODO
  */
 @Data
+@NoArgsConstructor
 public class MessageHeader {
     private int version = 1;
     private long streamId;
     private int opCode;
 
+    public MessageHeader(long streamId) {
+        this.streamId = streamId;
+    }
 }

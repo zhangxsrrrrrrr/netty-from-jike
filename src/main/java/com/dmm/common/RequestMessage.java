@@ -1,10 +1,13 @@
 package com.dmm.common;
 
+import lombok.ToString;
+
 /**
  * @author zhangxun_a
  * @date 2023/2/22 22:52
  * @description: TODO
  */
+@ToString
 public class RequestMessage extends Message<Operation> {
     @Override
     public Class getMessageBodyDecodeClass(int opCode) {

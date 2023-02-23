@@ -15,6 +15,10 @@ import lombok.extern.java.Log;
 public class AuthOperation extends Operation {
     private String userName;
 
+    public AuthOperation(String userName) {
+        this.userName = userName;
+    }
+
     @Override
     public OperationResult execute() {
         if ("admin".equals(userName)) {

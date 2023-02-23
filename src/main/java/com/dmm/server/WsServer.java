@@ -1,14 +1,21 @@
 package com.dmm.server;
 
+import com.dmm.server.codec.AuthFrameDecoder;
+import com.dmm.server.codec.AuthFrameEncoder;
+import com.dmm.server.codec.AuthProtocolDecoder;
+import com.dmm.server.codec.AuthProtocolEncoder;
+import com.dmm.common.RequestMessage;
+import com.dmm.server.codec.handler.AuthServerProcessHandler;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.nio.NioEventLoopGroup;
-import io.netty.channel.socket.ServerSocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.handler.logging.LogLevel;
+import io.netty.handler.logging.LoggingHandler;
 import io.netty.handler.timeout.IdleStateHandler;
 
 /**
@@ -24,12 +31,17 @@ public class WsServer {
         try {
             bootstrap.group(bossGroup, workerGroup)
                     .channel(NioServerSocketChannel.class)
+                    .handler(new LoggingHandler(LogLevel.INFO))
                     .childHandler(new ChannelInitializer<NioSocketChannel>() {
                         @Override
                         protected void initChannel(NioSocketChannel channel) throws Exception {
                             ChannelPipeline pipeline = channel.pipeline();
-                            pipeline.addLast(new IdleStateHandler(10,0,0));
-                            pipeline.addLast(new MyServerHandler());
+                            pipeline.addLast(new AuthFrameDecoder());
+                            pipeline.addLast(new AuthProtocolDecoder());
+                            pipeline.addLast(new AuthFrameEncoder());
+                            pipeline.addLast(new AuthProtocolEncoder());
+                            pipeline.addLast(new LoggingHandler(LogLevel.INFO));
+                            pipeline.addLast(new AuthServerProcessHandler());
                         }
                     });
             ChannelFuture channelFuture = bootstrap.bind(8080).sync();
