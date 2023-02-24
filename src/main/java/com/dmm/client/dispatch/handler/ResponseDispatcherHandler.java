@@ -8,7 +8,7 @@ import io.netty.channel.SimpleChannelInboundHandler;
 /**
  * @author: zhangxun
  * @create: 2023-02-23 22:24
- * @description:
+ * @description: 监听通道的读事件，将读取到的数据设置到Future中
  **/
 public class ResponseDispatcherHandler extends SimpleChannelInboundHandler<ResponseMessage> {
     private final RequestPendingCenter requestPendingCenter;

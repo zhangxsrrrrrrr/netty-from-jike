@@ -49,9 +49,11 @@ public class WsClientV1 {
         ChannelFuture channelFuture = bootstrap.connect("localhost", 8080).sync();
         long id = System.currentTimeMillis();
 
-        channelFuture.channel().writeAndFlush(buildRequest(id));
+        // 在写数据之前，将结果Future注册到注册中心去
         OperationResultFuture operationResultFuture = new OperationResultFuture();
         requestPendingCenter.add(id, operationResultFuture);
+        channelFuture.channel().writeAndFlush(buildRequest(id));
+
         OperationResult operationResult = operationResultFuture.get();
         System.out.println(new Gson().toJson(operationResult));
         channelFuture.channel().closeFuture().get();

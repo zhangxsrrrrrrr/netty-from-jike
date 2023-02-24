@@ -8,7 +8,7 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * @author: zhangxun
  * @create: 2023-02-23 22:21
- * @description:
+ * @description: 异步结果注册中心
  **/
 public class RequestPendingCenter {
     private final Map<Long, OperationResultFuture> map = new ConcurrentHashMap<>();
