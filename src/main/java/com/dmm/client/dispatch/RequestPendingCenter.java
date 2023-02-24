@@ -11,7 +11,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @description:
  **/
 public class RequestPendingCenter {
-    private Map<Long, OperationResultFuture> map = new ConcurrentHashMap<>();
+    private final Map<Long, OperationResultFuture> map = new ConcurrentHashMap<>();
 
     public void add(Long streamId, OperationResultFuture future) {
         this.map.put(streamId, future);

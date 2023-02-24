@@ -26,9 +26,10 @@ import java.util.concurrent.ExecutionException;
  * @description:
  **/
 public class WsClientV1 {
+    static RequestPendingCenter requestPendingCenter = new RequestPendingCenter();
+
     public static void main(String[] args) throws ExecutionException, InterruptedException {
         NioEventLoopGroup group = new NioEventLoopGroup();
-        RequestPendingCenter requestPendingCenter = new RequestPendingCenter();
         Bootstrap bootstrap = new Bootstrap();
         bootstrap.group(group)
                 .channel(NioSocketChannel.class)
@@ -47,17 +48,23 @@ public class WsClientV1 {
                 });
         ChannelFuture channelFuture = bootstrap.connect("localhost", 8080).sync();
         long id = System.currentTimeMillis();
+
+        channelFuture.channel().writeAndFlush(buildRequest(id));
         OperationResultFuture operationResultFuture = new OperationResultFuture();
         requestPendingCenter.add(id, operationResultFuture);
+        OperationResult operationResult = operationResultFuture.get();
+        System.out.println(new Gson().toJson(operationResult));
+        channelFuture.channel().closeFuture().get();
+
+    }
+
+    public static RequestMessage buildRequest(long id) {
+
         RequestMessage requestMessage = new RequestMessage();
         MessageHeader messageHeader = new MessageHeader(id);
         messageHeader.setOpCode(1);
         requestMessage.setMessageHeader(messageHeader);
         requestMessage.setMessageBody(new AuthOperation("zhangsan"));
-        channelFuture.channel().writeAndFlush(requestMessage);
-        OperationResult operationResult = operationResultFuture.get();
-        System.out.println(new Gson().toJson(operationResult));
-        channelFuture.channel().closeFuture().get();
-
+        return requestMessage;
     }
 }

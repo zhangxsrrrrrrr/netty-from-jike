@@ -22,6 +22,12 @@ import io.netty.handler.timeout.IdleStateHandler;
  * @author: zhangxun
  * @create: 2023-02-23 17:36
  * @description:
+ *  数据内容进来了：
+ *      1. 先经过Frame解码器（decode），这个主要是防止粘包和拆包问题
+ *      2. 在经过内容解码器（decode），将ByteBuf转换成业务需要的对象
+ *   数据写出去：
+ *      1. 先经过内容编码器（encode），将内容存入byteBuf中
+ *      2. 再经过Frame编码器，这个是主要解决发送出去的时候解决粘包和拆包问题
  **/
 public class WsServer {
     public static void main(String[] args) {
